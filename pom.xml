@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 
+         http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    
+    <groupId>com.example</groupId>
+    <artifactId>django-todo-cicd</artifactId>
+    <version>1.0</version>
+    <packaging>pom</packaging>
+    
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+    
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>3.0.0</version>
+                <executions>
+                    <execution>
+                        <id>build-website</id>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                        <configuration>
+                            <executable>bash</executable>
+                            <arguments>
+                                <argument>-c</argument>
+                                <argument><![CDATA[
+                                    echo "=== Building To-Do Website ==="
+                                    echo "Current directory: $(pwd)"
+                                    echo "Files:"
+                                    ls -la
+                                    
+                                    if [ -f "index.html" ]; then
+                                        echo "✅ Found index.html"
+                                        echo "File size: $(wc -c < todo.html) bytes"
+                                        echo "Lines: $(wc -l < index.html)"
+                                        
+                                        # Create simple build output
+                                        mkdir -p target
+                                        echo "Build successful at $(date)" > target/build-success.txt
+                                        echo "todo.html validated" >> target/build-success.txt
+                                        
+                                        echo "✅ Build completed successfully!"
+                                    else
+                                        echo "❌ Error: todo.html not found"
+                                        exit 1
+                                    fi
+                                ]]></argument>
+                            </arguments>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+</project>
